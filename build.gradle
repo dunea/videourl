@@ -17,10 +17,10 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'  // 测试支持
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // JPA 支持
+    // implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // JPA 支持
     implementation 'org.springframework.boot:spring-boot-starter-web'  // Web 支持
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'  // 如果需要模板引擎支持
-    implementation 'mysql:mysql-connector-java:8.0.33'  // MySQL 驱动
+    // implementation 'mysql:mysql-connector-java:8.0.33'  // MySQL 驱动
     implementation 'org.springframework.boot:spring-boot-starter-logging'  // 日志支持
     implementation 'net.bramp.ffmpeg:ffmpeg:0.8.0' // ffmpeg调用库
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8' // 本地键值对缓存库

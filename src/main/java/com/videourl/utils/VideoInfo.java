@@ -1,4 +1,4 @@
-package com.videourl.util;
+package com.videourl.utils;
 
 import java.util.Objects;
 

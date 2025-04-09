@@ -1,35 +1,20 @@
-package com.videourl.service;
+package com.videourl.services;
 
-import com.videourl.model.StatusType;
-import com.videourl.model.Video;
-import com.videourl.util.FfmpegUtil;
-import com.videourl.util.FfmpegUtil.*;
+import com.videourl.utils.UtilFfmpeg;
 
-import com.videourl.repository.VideoRepository;
-import com.videourl.util.VideoInfo;
+import com.videourl.utils.VideoInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 
 // 视频相关的业务逻辑，如通过FFmpeg获取视频封面和信息等。
 @Service
 public class VideoService {
-
-    private final VideoRepository videoRepository;
-
-    @Autowired
-    public VideoService(VideoRepository videoRepository) {
-        this.videoRepository = videoRepository;
-    }
 
 
     /**
@@ -42,7 +27,7 @@ public class VideoService {
     public VideoInfo getVideoInfo(String videoUrl) {
         try {
             videoUrl = decodeUrlIfEncoded(videoUrl);
-            return FfmpegUtil.getVideoInfo(videoUrl);
+            return UtilFfmpeg.getVideoInfo(videoUrl);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -52,30 +37,10 @@ public class VideoService {
     public byte[] getVideoCover(String videoUrl) {
         try {
             videoUrl = decodeUrlIfEncoded(videoUrl);
-            return FfmpegUtil.getVideoCover(videoUrl);
+            return UtilFfmpeg.getVideoCover(videoUrl);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    // 保存视频
-    public Video saveVideo(Video video) {
-        return videoRepository.save(video);
-    }
-
-    // 根据视频 URL 查找视频
-    public Optional<Video> getVideoByUrl(String videoUrl) {
-        return videoRepository.findByVideoUrl(videoUrl);
-    }
-
-    // 根据状态查找视频
-    public List<Video> getVideosByStatus(int status) {
-        return videoRepository.findByStatus(StatusType.fromValue(status));
-    }
-
-    // 根据创建时间查找视频
-    public List<Video> getVideosAfterDate(LocalDateTime dateTime) {
-        return videoRepository.findByCreatedAtAfter(dateTime);
     }
 
     /**

@@ -2,7 +2,7 @@ package com.videourl.controller;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.videourl.service.VideoService;
+import com.videourl.services.VideoService;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;

@@ -1,25 +1,17 @@
-package com.videourl.util;
+package com.videourl.utils;
 
-import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
-import net.bramp.ffmpeg.builder.FFmpegBuilder;
-import net.bramp.ffmpeg.builder.FFmpegOutputBuilder;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 import net.bramp.ffmpeg.probe.FFmpegStream;
-import net.bramp.ffmpeg.progress.Progress;
-import net.bramp.ffmpeg.progress.ProgressListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.bramp.ffmpeg.FFmpeg;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class FfmpegUtil {
-    private static final Logger logger = LoggerFactory.getLogger(FfmpegUtil.class);
+public class UtilFfmpeg {
+    private static final Logger logger = LoggerFactory.getLogger(UtilFfmpeg.class);
     private static final int THUMBNAIL_TIME = 5; // 提取第5秒的画面作为封面
 
     // 使用 FFprobe 获取视频信息
@@ -48,7 +40,8 @@ public class FfmpegUtil {
     // 提取远程视频封面并返回为字节数组
     public static byte[] getVideoCover(String videoUrl) throws IOException {
         // 构建 FFmpeg 命令
-        String[] cmd = {"ffmpeg",                                       // FFmpeg 可执行文件
+        String[] cmd = {
+                "ffmpeg",                                       // FFmpeg 可执行文件
                 "-ss", "00:00:01",                              // 定位到第 1 秒
                 "-i", videoUrl,                                 // 输入视频 URL
                 "-vframes", "1",                                // 提取 1 帧

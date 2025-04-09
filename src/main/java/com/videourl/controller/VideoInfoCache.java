@@ -2,8 +2,8 @@ package com.videourl.controller;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.videourl.service.VideoService;
-import com.videourl.util.VideoInfo;
+import com.videourl.services.VideoService;
+import com.videourl.utils.VideoInfo;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;

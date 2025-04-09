@@ -19,6 +19,22 @@
 - 图片使用Cloudflare CDN进行缓存
 - 同一个url使用了并发锁
 
+### todo
+
+- [x] 视频封面
+- [x] 视频信息
+- [ ] 窄带高清
+- [ ] 视频转码
+- [ ] 视频截取
+- [ ] 视频声道提取
+- [ ] 视频取所有关键帧图片
+- [ ] 视频取间隔时间图片
+- [ ] 图片压缩
+- [ ] 图片转码
+- [ ] 图片缩略图
+- [ ] 图片模糊图
+- [ ] 图片裁剪
+
 ### 视频链接获取封面
 
 ```base
@@ -60,3 +76,4 @@ DATABASE_URL = jdbc:mysql://localhost:3306/videourl?useSSL=false&serverTimezone=
 DATABASE_USERNAME = root
 DATABASE_PASSWORD = password
 ```
+

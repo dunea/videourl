@@ -1,15 +1,11 @@
 package com.videourl.controller;
 
-import com.videourl.model.Video;
-import com.videourl.service.VideoService;
-import com.videourl.util.*;
+import com.videourl.services.VideoService;
+import com.videourl.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -20,13 +16,11 @@ import java.util.concurrent.TimeUnit;
 @RestController
 public class VideoController {
 
-    private final VideoService videoService;
     private final VideoInfoCache videoInfoCache;
     private final VideoResourceCache videoResourceCache;
 
     @Autowired
     public VideoController(VideoService videoService) {
-        this.videoService = videoService;
         this.videoInfoCache = new VideoInfoCache(videoService);
         this.videoResourceCache = new VideoResourceCache(videoService);
     }
@@ -69,26 +63,5 @@ public class VideoController {
             Thread.currentThread().interrupt();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-
-    // 通过视频 URL 查找视频
-    @GetMapping("/video/{videoUrl}")
-    public Optional<Video> getVideoByUrl(@PathVariable String videoUrl) {
-        return videoService.getVideoByUrl(videoUrl);
-    }
-
-    // 通过状态查找视频
-    @GetMapping("/videos/status/{status}")
-    public List<Video> getVideosByStatus(@PathVariable int status) {
-        return videoService.getVideosByStatus(status);
-    }
-
-    // 通过创建时间查找视频
-    @GetMapping("/videos/after/{dateTime}")
-    public List<Video> getVideosAfterDate(@PathVariable String dateTime) {
-        // 这里需要将字符串转换为 LocalDateTime 类型
-        LocalDateTime dateTimeParsed = LocalDateTime.parse(dateTime);
-        return videoService.getVideosAfterDate(dateTimeParsed);
     }
 }
