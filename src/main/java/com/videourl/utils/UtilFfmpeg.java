@@ -38,10 +38,9 @@ public class UtilFfmpeg {
 
 
     // 提取远程视频封面并返回为字节数组
-    public static byte[] getVideoCover(String videoUrl) throws IOException {
+    public static byte[] getVideoCover(String videoUrl) throws IOException, InterruptedException {
         // 构建 FFmpeg 命令
-        String[] cmd = {
-                "ffmpeg",                                       // FFmpeg 可执行文件
+        String[] cmd = {"ffmpeg",                                       // FFmpeg 可执行文件
                 "-ss", "00:00:01",                              // 定位到第 1 秒
                 "-i", videoUrl,                                 // 输入视频 URL
                 "-vframes", "1",                                // 提取 1 帧
@@ -67,8 +66,6 @@ public class UtilFfmpeg {
             // 等待进程结束
             process.waitFor();
             return outputStream.toByteArray();
-        } catch (InterruptedException e) {
-            throw new IOException("进程被中断", e);
         } finally {
             process.destroy();
         }
@@ -94,7 +91,7 @@ public class UtilFfmpeg {
         try {
             byte[] videoCover = getVideoCover(videoUrl);
             System.out.println("视频封面大小：" + videoCover.length);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

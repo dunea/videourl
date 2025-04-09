@@ -3,7 +3,6 @@ package com.videourl.services;
 import com.videourl.utils.UtilFfmpeg;
 
 import com.videourl.utils.VideoInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -38,7 +37,7 @@ public class VideoService {
         try {
             videoUrl = decodeUrlIfEncoded(videoUrl);
             return UtilFfmpeg.getVideoCover(videoUrl);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
