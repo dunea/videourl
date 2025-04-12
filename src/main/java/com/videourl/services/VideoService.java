@@ -1,8 +1,8 @@
 package com.videourl.services;
 
-import com.videourl.utils.UtilFfmpeg;
+import com.videourl.utils.ffmpeg.FFmpegUtil;
 
-import com.videourl.utils.VideoInfo;
+import com.videourl.utils.ffmpeg.VideoInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -26,7 +26,7 @@ public class VideoService {
     public VideoInfo getVideoInfo(String videoUrl) {
         try {
             videoUrl = decodeUrlIfEncoded(videoUrl);
-            return UtilFfmpeg.getVideoInfo(videoUrl);
+            return FFmpegUtil.getVideoInfo(videoUrl);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -36,7 +36,7 @@ public class VideoService {
     public byte[] getVideoCover(String videoUrl) {
         try {
             videoUrl = decodeUrlIfEncoded(videoUrl);
-            return UtilFfmpeg.getVideoCover(videoUrl);
+            return FFmpegUtil.getVideoCover(videoUrl);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }

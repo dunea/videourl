@@ -1,7 +1,9 @@
 package com.videourl.controller;
 
+import com.videourl.cache.VideoInfoCache;
+import com.videourl.cache.VideoResourceCache;
 import com.videourl.services.VideoService;
-import com.videourl.utils.*;
+import com.videourl.utils.ffmpeg.VideoInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -42,21 +44,26 @@ public class VideoController {
     @GetMapping("/cover")
     public ResponseEntity<byte[]> getVideoCover(@RequestParam("url") String videoUrl) {
         try {
+            // 视频封面资源缓存管理器
             CompletableFuture<byte[]> future = videoResourceCache.getVideoCover(videoUrl);
             byte[] coverBytes = future.get();
 
+            // 获取封面为空则返回404
             if (coverBytes == null || coverBytes.length == 0) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
+            // 新建headers响应头
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_JPEG); // 根据实际图片类型修改，这里假设是 JPEG
+            // 响应封面的图片类型
+            headers.setContentType(MediaType.IMAGE_JPEG);
             headers.setContentLength(coverBytes.length);
 
             // 设置缓存控制头，让浏览器缓存响应 7 天
             CacheControl cacheControl = CacheControl.maxAge(7, TimeUnit.DAYS);
             headers.setCacheControl(cacheControl.getHeaderValue());
 
+            // 返回响应的图片资源
             return new ResponseEntity<>(coverBytes, headers, HttpStatus.OK);
         } catch (InterruptedException | ExecutionException e) {
             // 处理异常，可根据具体情况进行日志记录和错误响应

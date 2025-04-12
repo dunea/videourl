@@ -1,4 +1,4 @@
-package com.videourl.services;
+package com.videourl.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.cache.CacheManager;

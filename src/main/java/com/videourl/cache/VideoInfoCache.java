@@ -1,9 +1,9 @@
-package com.videourl.controller;
+package com.videourl.cache;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.videourl.services.VideoService;
-import com.videourl.utils.VideoInfo;
+import com.videourl.utils.ffmpeg.VideoInfo;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +24,7 @@ public class VideoInfoCache {
             return cache.get(url, () -> videoService.getVideoInfo(url));
         } catch (ExecutionException e) {
             // 处理 ExecutionException，这里只是简单地重新抛出异常
-            throw new RuntimeException("Failed to get video info for url: " + url, e.getCause());
+            throw new RuntimeException("无法获取url的视频信息", e.getCause());
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.videourl.utils;
+package com.videourl.utils.ffmpeg;
 
 import java.util.Objects;
 

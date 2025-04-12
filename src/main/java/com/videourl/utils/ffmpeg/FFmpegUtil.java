@@ -1,4 +1,4 @@
-package com.videourl.utils;
+package com.videourl.utils.ffmpeg;
 
 import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
@@ -10,8 +10,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class UtilFfmpeg {
-    private static final Logger logger = LoggerFactory.getLogger(UtilFfmpeg.class);
+public class FFmpegUtil {
+    private static final Logger logger = LoggerFactory.getLogger(FFmpegUtil.class);
     private static final int THUMBNAIL_TIME = 5; // 提取第5秒的画面作为封面
 
     // 使用 FFprobe 获取视频信息
