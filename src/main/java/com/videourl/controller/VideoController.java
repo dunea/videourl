@@ -1,15 +1,13 @@
 package com.videourl.controller;
 
 import com.videourl.cache.VideoInfoCache;
-import com.videourl.cache.VideoResourceCache;
-import com.videourl.services.VideoService;
+import com.videourl.cache.VideoCoverCache;
 import com.videourl.utils.ffmpeg.VideoInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 
@@ -19,38 +17,44 @@ import java.util.concurrent.TimeUnit;
 public class VideoController {
 
     private final VideoInfoCache videoInfoCache;
-    private final VideoResourceCache videoResourceCache;
+    private final VideoCoverCache videoCoverCache;
 
     @Autowired
-    public VideoController(VideoService videoService) {
-        this.videoInfoCache = new VideoInfoCache(videoService);
-        this.videoResourceCache = new VideoResourceCache(videoService);
+    public VideoController(VideoInfoCache videoInfoCache, VideoCoverCache videoCoverCache) {
+        this.videoInfoCache = videoInfoCache;
+        this.videoCoverCache = videoCoverCache;
     }
 
     // 根据视频url获取视频封面
     @CrossOrigin(origins = "*")
     @GetMapping("/info")
-    public VideoInfo getVideoInfo(@RequestParam("url") String videoUrl) {
-        VideoInfo videoInfo = videoInfoCache.getVideoInfo(videoUrl);
+    public CompletableFuture<ResponseEntity<VideoInfo>> getVideoInfo(@RequestParam("url") String videoUrl) {
+        return videoInfoCache.getVideoInfo(videoUrl).thenApply(videoInfo -> {
+            // 新建headers响应头
+            HttpHeaders headers = new HttpHeaders();
+            // 响应封面的视频信息类型
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // 设置缓存控制头，让浏览器缓存响应 7 天
-        CacheControl cacheControl = CacheControl.maxAge(7, TimeUnit.DAYS);
+            // 设置缓存控制头，让浏览器缓存响应 7 天
+            CacheControl cacheControl = CacheControl.maxAge(7, TimeUnit.DAYS);
+            headers.setCacheControl(cacheControl.getHeaderValue());
 
-        return ResponseEntity.ok().cacheControl(cacheControl).body(videoInfo).getBody();
+            // 返回响应的视频信息
+            return new ResponseEntity<>(videoInfo, headers, HttpStatus.OK);
+        }).exceptionally(e -> {
+            // 处理异常，可根据具体情况进行日志记录和错误响应
+            Thread.currentThread().interrupt();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        });
     }
 
     // 根据视频url获取视频封面
     @CrossOrigin(origins = "*")
     @GetMapping("/cover")
-    public ResponseEntity<byte[]> getVideoCover(@RequestParam("url") String videoUrl) {
-        try {
-            // 视频封面资源缓存管理器
-            CompletableFuture<byte[]> future = videoResourceCache.getVideoCover(videoUrl);
-            byte[] coverBytes = future.get();
-
-            // 获取封面为空则返回404
+    public CompletableFuture<ResponseEntity<?>> getVideoCover(@RequestParam("url") String videoUrl) {
+        return videoCoverCache.getVideoCover(videoUrl).thenApply(coverBytes -> {
             if (coverBytes == null || coverBytes.length == 0) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
 
             // 新建headers响应头
@@ -65,10 +69,10 @@ public class VideoController {
 
             // 返回响应的图片资源
             return new ResponseEntity<>(coverBytes, headers, HttpStatus.OK);
-        } catch (InterruptedException | ExecutionException e) {
+        }).exceptionally(e -> {
             // 处理异常，可根据具体情况进行日志记录和错误响应
             Thread.currentThread().interrupt();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        });
     }
 }

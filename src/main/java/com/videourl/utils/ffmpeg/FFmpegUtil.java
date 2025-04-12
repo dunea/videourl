@@ -40,14 +40,7 @@ public class FFmpegUtil {
     // 提取远程视频封面并返回为字节数组
     public static byte[] getVideoCover(String videoUrl) throws IOException, InterruptedException {
         // 构建 FFmpeg 命令
-        String[] cmd = {"ffmpeg",                                       // FFmpeg 可执行文件
-                "-ss", "00:00:01",                              // 定位到第 1 秒
-                "-i", videoUrl,                                 // 输入视频 URL
-                "-vframes", "1",                                // 提取 1 帧
-                "-f", "image2pipe",                            // 输出格式为管道流
-                "-c:v", "mjpeg",                                // 编码为 JPEG
-                "-"                                             // 输出到 stdout
-        };
+        String[] cmd = {"ffmpeg", "-ss", "00:00:01", "-i", videoUrl, "-vframes", "1", "-f", "image2pipe", "-c:v", "mjpeg", "-"};
 
         // 启动进程
         Process process = new ProcessBuilder(cmd).start();

@@ -3,6 +3,7 @@ package com.videourl.cache;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.videourl.services.VideoService;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -16,10 +17,10 @@ import java.util.concurrent.TimeUnit;
  * - 异步加载数据避免阻塞
  * - 异常时自动清理无效缓存
  */
-public class VideoResourceCache {
+@Component
+public class VideoCoverCache {
     // Guava Cache 实例，键为视频URL，值为封面数据的异步计算结果
-    private final Cache<String, CompletableFuture<byte[]>> coverCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
-
+    private final Cache<String, CompletableFuture<byte[]>> coverCache;
     private final VideoService videoService; // 视频服务接口，用于获取封面数据
 
     /**
@@ -27,8 +28,9 @@ public class VideoResourceCache {
      *
      * @param videoService 视频服务实例
      */
-    public VideoResourceCache(VideoService videoService) {
+    public VideoCoverCache(VideoService videoService) {
         this.videoService = videoService;
+        this.coverCache = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
     }
 
     /**
@@ -56,7 +58,7 @@ public class VideoResourceCache {
             if (cause instanceof RuntimeException) {
                 throw (RuntimeException) cause; // 直接抛出已知运行时异常
             } else {
-                throw new RuntimeException("加载视频封面失败", cause); // 包装非预期异常
+                throw new RuntimeException("获取视频封面失败", cause); // 包装非预期异常
             }
         }
     }
